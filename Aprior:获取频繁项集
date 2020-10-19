@@ -12,9 +12,7 @@ def get_data():
             name_new.append(name.strip())
         data.append(name_new[1:])
     return data
-
 #得到频繁一项集
-def find_frequence_1_items(data,support):
 '''
     Args:
         data #数据
@@ -23,6 +21,7 @@ def find_frequence_1_items(data,support):
         L1 #频繁一项集
         support_matrix:支持度数组
 '''
+def find_frequence_1_items(data,support):
     #字典中保存所有演员的出现次数
     C1={}
     #L1保存所有的1频繁项集
@@ -45,8 +44,6 @@ def find_frequence_1_items(data,support):
     return L1,support_matrix,num_item
 
 #说明组合得到的K+1项集的k子集是否存在于k项频繁子集中
-
-def has_infrequent_subset(c,L):
 '''
     Args:
         c:k+1项子集
@@ -55,6 +52,7 @@ def has_infrequent_subset(c,L):
         TRUE:不存在子集在L中，应删除
         False:存在应加入
 '''
+def has_infrequent_subset(c,L):
     temp=['' for _ in range(len(c)-1)]
     for i in range(len(c)):
         for k in range(i):
@@ -65,7 +63,6 @@ def has_infrequent_subset(c,L):
             return True
     return False
 #验证两个数组是否存在包含关系
-def IN (item,_):
 '''
     Args:
         _:主数组
@@ -73,13 +70,13 @@ def IN (item,_):
     return：
         False or True
 '''
+def IN (item,_):
     for m in item:
         if m not in _:
             return False
     return True
 
 #由lk-1项集得到lk项集
-def apriori_gen(data,num_item,L,k,support):
 '''
     Args:
      LK-1:k-1频繁项集
@@ -89,6 +86,7 @@ def apriori_gen(data,num_item,L,k,support):
     Return:
      LK: K频繁项集
 '''
+def apriori_gen(data,num_item,L,k,support):
     #存储需要返回的k+1满足最小支持度的频繁项集
     result=[]
     #存储得到的所有（k + 1）频繁项
@@ -101,6 +99,7 @@ def apriori_gen(data,num_item,L,k,support):
     count={}
     for l1 in L:
          for l2 in L:
+             c=[]
              if l1[:k-1]==l2[:k-1] and l1[k-1]<l2[k-1]:
                  for i in  range(len(l1)):
                      c.append(l1[i])
@@ -115,23 +114,8 @@ def apriori_gen(data,num_item,L,k,support):
                  else:
                      count[str(item)]=1
     for item in item_k_add_one:
-        if count[str(item)]>(support*num_item):
+        if str(item) in count.keys() and count[str(item)]>(support*num_item):
             result.append(item)
             support_matrix[str(item)]=count[str(item)]
     return result,support_matrix
 
-
-
-
-data=get_data()
-L,support,num_item=find_frequence_1_items(data,0.3)
-#记录说明这是第k频繁项集
-k=1
-#存储所有的频繁项集
-dict_all_fre={}
-dict_all_fre[1]=L
-while (len(L)>1):
-    print(L)
-    L,support_matrix=apriori_gen(data,num_item,L,k,0.3)
-    k+=1
-    dict_all_fre[k]=L
