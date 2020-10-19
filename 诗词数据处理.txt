@@ -1,0 +1,37 @@
+import jieba
+
+#分词结果转换为数组
+'''
+       Args:
+        str:输入的字符串
+       return：
+        matrix：分词结果组成的字符串
+'''
+def str2list(str):
+    for _ in str:
+        left=0
+        right=0
+        matrix=[]
+        while right<len(str):
+            if str[right]==',':
+                matrix.append(str[left:right])
+                left=right+1
+                right+=1
+            else:
+                right+=1
+    return matrix
+
+#获取数组
+def get_data():
+    f=open('D:/bird.txt',encoding='utf-8',errors='ignore')
+    line=f.readline()
+    data=[]
+    while line:
+        line=line.replace('，',"").replace('。', "").replace(' ',"").replace('？',"")
+        line = line[:-1]
+        line=jieba.cut(line,cut_all=False,HMM=True)
+        list=str2list(','.join(line)+',')
+        data.append(list)
+        line=f.readline()
+    f.close()
+    return data
